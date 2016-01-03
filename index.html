@@ -2,42 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>testmodule</title>
+  <title>俺のエディタプロトタイプ</title>
 <style media="screen">
+  body {
+      font-family: YuGothic;
+  }
+  .container {
+    margin: 0 10%;
+  }
   #main {
     outline: none;
+    margin-top: 30px;
+    padding: 10px;
   }
-  #menu li a,
-  #menu li a:hover,
-  #menu li a:hover,
-  #menu li a:visited, {
-    color: #ddd;
-    font-size: small;
-    text-decoration: none;
+  #main:focus {
+    background-color: #f5f5f5;
   }
+
+  #menu {
+      padding: 0;
+  }
+  #menu li {
+    list-style: none;
+    margin-bottom: 10px;
+  }
+  .btn_switch, .btn_delete, .btn_create {
+    border: none;
+    padding: 8px 16px;
+    height: 100%;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .btn_switch {
+      width: 70%;
+      margin-right: 10px;
+      background-color: rgba(255,255,255,0.85);
+      color: rgba(0,0,0,0.85);
+  }
+
+  .btn_switch:hover {
+      background-color: #FBC02D;
+      transition: background-color 0.3s;
+  }
+  #slider {
+    background-color: #ddd;
+    padding: 30px 16px;
+    position: absolute;
+    top: 0;
+    left: -332px;
+    transition: left 0.3s;
+    height: 100%;
+    width: 300px;
+  }
+  #slider.visible {
+    left:0 !important;
+    transition: left 0.3s;
+  }
+  .overall {
+    opacity: 0;
+  }
+  .overall.visible {
+      transition: opacity 0.3s;
+      opacity: 1;
+      background-color: rgba(0,0,0,0.5);
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+  }
+  .opener {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.85);
+    z-index: 10;
+
+    color: rgba(255,255,255,0.85);
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 39px;
+    font-family: sans-serif;
+  }
+
+
 </style>
 </head>
 <body>
-  <h1>test editor</h1>
-  <p class="edittingKey"></p>
-  <p>
-    <button id="create">新しい記事の作成</button>
-  </p>
-  <ul id="menu"></ul>
-  <div id="main">
+  <div class="opener">M</div>
+  <div class="overall"></div>
+  <div class="container">
+    <div id="slider">
+      <p>現在の記事ID : <br><span class="edittingKey"></span></p>
+      <p>
+        <span>記事一覧</span>
+        <ul id="menu"></ul>
+      </p>
+      <p><button class="btn_create">新しい記事の作成</button></p>
+    </div>
+    <div id="main">
+    </div>
   </div>
+
 
 <script src="orenoeditor_proto.js" charset="utf-8"></script>
 <script>
   (function(){
-    new OrenoEditor({
-      selector: '#main'
-      // selector: {
-      //   editor: '#main',
-      //   create: '#create'
-      // }
-    }).run()
-  })()
+    new OrenoEditor({ selector: '#main' }).run()
+  })();
+
+</script>
+<script src="jquery-1.11.2.min.js" charset="utf-8"></script>
+<script>
+(function(){
+  $('.opener, .overall, .btn_switch, .btn_create').click(function(){
+    $('#slider').stop(true).toggleClass('visible')
+    $('.overall').stop(true).toggleClass('visible')
+  })
+
+})();
 </script>
 </body>
 </html>

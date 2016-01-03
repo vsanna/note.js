@@ -40,11 +40,24 @@
 
 // 書き方2 オーソドックス.
 var OrenoEditor = function(config){
+  this.MAX_ARTICLE_NUM = 20;
+  this.KEY_PREFIX = 'testString';
+
+
   this.selector = config.selector
-  this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : 'testString1'
+  /*
+  指定しているセレクタ
+  - エディター
+  - メニュー
+  - 新規記事作成ボタン
+  - 現在の記事IDの表記箇所 ... 不要?
+  - 切り替えボタン
+  - 削除ボタン
+  */
+  this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : this.KEY_PREFIX + '1'
   this.articleKeys = [];
 
-  this.MAX_ARTICLE_NUM = 20;
+
 
 }
 
@@ -90,13 +103,16 @@ OrenoEditor.prototype = {
   makeMenu: function(){
     this.formatMenu();
     this.readKeysFromStorage();
+
+    var replaceTarget = new RegExp(this.KEY_PREFIX);
     for( var index in this.articleKeys ){
-      this.createButton(this.articleKeys[index], this.articleKeys[index].replace(/testString/,''));
+      this.createButton(this.articleKeys[index], this.articleKeys[index].replace(replaceTarget,''));
     }
   },
   readInitText: function(){
     if( this.edittingKey && localStorage[this.edittingKey] ){
       this.editableArea.innerHTML = localStorage[this.edittingKey]
+      this.showCurrentArticleKey()
     }
   },
   makeButtonToSave: function(){
@@ -105,19 +121,22 @@ OrenoEditor.prototype = {
     }).bind(this)) // bind(this)することで、イベント付与時に、thisがDOM要素になることを回避!非常に便利
   },
   makeButtonToCreateNewArticle: function(){
-    document.querySelector('#create').addEventListener('click', (function(){
+    document.querySelector('.btn_create').addEventListener('click', (function(){
       if(this.maxArticleNum > this.MAX_ARTICLE_NUM){
         alert('記事は100以上作成できません')
         return
       }
-      var randID = Math.round(Math.random()*100000000000000);
-      localStorage.setItem('testString'+randID,'');
-      this.switchText('testString' + randID)
+      var randID = Math.round(Math.random()*100000000000000); // かっこ良くしたい。
+      localStorage.setItem(this.KEY_PREFIX+randID,'');
+      this.switchText(this.KEY_PREFIX + randID)
       this.makeMenu();
     }).bind(this))
   },
 
   // 以下切り出したメソッド
+  showCurrentArticleKey: function(){
+    document.querySelector('.edittingKey').innerHTML = this.edittingKey
+  },
   formatMenu: function(){
     // 初期化
     if( this.articleKeys.length > 0){
@@ -134,24 +153,25 @@ OrenoEditor.prototype = {
   readKeysFromStorage: function(){
     var keys = []
     for(var prop in localStorage){
-      // testStringから始まるkeyのみ取得
-      if( /^testString/.test(prop) ){
+      // KEY_PREFIXから始まるkeyのみ取得
+      if( new RegExp("^" + this.KEY_PREFIX).test(prop) ){
         keys.push(prop)
       }
     }
     this.articleKeys = keys;
   },
-  createButton: function(index){
+  createButton: function(item, index){
     // メニューにボタンを追加.
-    var textNode = document.createTextNode('テキストその' + String(index));
+    var textNode = document.createTextNode('テキストID: ' + String(index));
     var btn = document.createElement('button');
     var li = document.createElement('li')
 
     li.appendChild(btn);
     btn.appendChild(textNode);
 
-    var dataKey = index;
+    var dataKey = this.KEY_PREFIX + index;
     btn.setAttribute('data-key', dataKey);
+    btn.setAttribute('class', 'btn_switch');
     document.getElementById('menu').appendChild(li);
 
     // ボタンにイベント付与
@@ -163,6 +183,7 @@ OrenoEditor.prototype = {
     var deleteBtn = document.createElement('button')
     deleteBtn.appendChild(document.createTextNode('delete'));
     deleteBtn.setAttribute('data-key', dataKey);
+    deleteBtn.setAttribute('class', 'btn_delete');
     li.appendChild(deleteBtn);
 
     deleteBtn.addEventListener('click', this.deleteText.bind(this, dataKey))
@@ -170,14 +191,14 @@ OrenoEditor.prototype = {
 
   // 以下エディターの操作
   switchEdittingKey: function(key){
-    document.querySelector('.edittingKey').innerHTML = key
     this.edittingKey = key
+    this.showCurrentArticleKey()
     localStorage.setItem("edittingKey", this.edittingKey);
   },
   switchText: function(key){
     this.switchEdittingKey(key)
     this.editableArea.innerHTML = localStorage[key]
-    document.querySelector('#editor').focus()
+    this.editableArea.focus()
   },
   deleteText(key){
     if( confirm('really?') ){
@@ -198,11 +219,3 @@ OrenoEditor.prototype = {
   },
 
 }
-
-
-
-/*
-TODO
-- ユーザーが入力したmarkdownをHTMLにレンダリング
-- keyCodeを元にショートカットの提供
-*/
