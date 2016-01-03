@@ -232,3 +232,16 @@ Note.prototype = {
   },
 
 }
+
+
+/*TODO
+markdownの戦略
+
+1. r7kamuraさんのを参考とする
+- window.getSelection().getRangeAt(0).endContainer.data
+- document.execCommand('formatblock', false, 'h3');
+の活用
+
+2. onedayのように、見栄えはmarkdwonのままで、スタイルだけ当てる
+- 見た目はmarkdownのまま ... 他のメモ帳にも流用できる
+*/

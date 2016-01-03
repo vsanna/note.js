@@ -1,0 +1,5 @@
+$('.bold').click(function(){ document.execCommand('bold', false);})
+$('.bgc').click(function(){ document.execCommand('backColor', false, 'rgba(200,100,100,0.85)'); })
+$('.copy').click(function(){ document.execCommand('copy', false); })
+$('.insertUnorderedList').click(function(){ document.execCommand('insertUnorderedList'); })
+$('.indent').click(function(){ document.execCommand('indent'); })
