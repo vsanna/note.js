@@ -6,7 +6,11 @@ Note is a JavaScript library to create simple note application.
 ```js
 new Note.({selector:'#main'}).run()
 ```
+
 ![](/images/sample1.gif)
+
+
+after styling  
 ![](/images/sample2.gif)
 
 ## how to use
