@@ -10,7 +10,7 @@ new Note.({selector:'#main'}).run()
 ![](/images/sample1.gif)
 
 
-#g## after styling
+### after styling
 ![](/images/sample2.gif)
 
 ## how to use
