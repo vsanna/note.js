@@ -7,10 +7,11 @@ Note is a JavaScript library to create simple note application.
 new Note.({selector:'#main'}).run()
 ```
 
+### sample gif(using sample1.html)
 ![](/images/sample1.gif)
 
 
-### after styling
+### after styling(using sample2.html)
 ![](/images/sample2.gif)
 
 ## how to use
