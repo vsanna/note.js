@@ -1,11 +1,11 @@
 var Note = function(config){
   this.MAX_ARTICLE_NUM = 20;
   this.KEY_PREFIX = (config.prefix) ? config.prefix : 'Note';
-  this.selector = (config.selector) ? config.selector : '#main';
+  this.editor = (config.editor) ? config.editor : '#main';
   this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : undefined;
   this.articleKeys = [];
 
-
+  // こうしたい。
   // { selector: {
   //     editor: '#main',
   //     menu: '#menu',
@@ -31,8 +31,7 @@ Note.prototype = {
     this.showWitchKeyIsPressed();
   },
   findEditableArea: function(){
-    console.log(this.selector)
-    this.editableArea = document.querySelector(this.selector)
+    this.editableArea = document.querySelector(this.editor)
   },
   makeEditableArea: function(){
     this.editableArea.contentEditable = true

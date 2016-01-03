@@ -4,7 +4,7 @@ Note is a JavaScript library to create simple note application.([Demo](http://vs
 
 
 ```js
-new Note.({selector:'#main'}).run()
+new Note.({editor:'#main'}).run()
 ```
 
 ### sample gif(using sample.html)
