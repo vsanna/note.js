@@ -14,9 +14,13 @@
     outline: none;
     margin-top: 30px;
     padding: 10px;
+    box-shadow: none;
+    transition: box-shadow 0.3s;
+
   }
   #main:focus {
-    background-color: #f5f5f5;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    transition: box-shadow 0.3s;
   }
 
   #menu {
@@ -39,29 +43,45 @@
       margin-right: 10px;
       background-color: rgba(255,255,255,0.85);
       color: rgba(0,0,0,0.85);
+      transition: background-color 0.3s;
+
   }
 
   .btn_switch:hover {
       background-color: #FBC02D;
-      transition: background-color 0.3s;
+      transition: background-color 0.1s;
   }
   #slider {
     background-color: #ddd;
-    padding: 30px 16px;
+    padding: 50px 16px;
     position: absolute;
     top: 0;
     left: -332px;
     transition: left 0.3s;
     height: 100%;
     width: 300px;
+    font-size: 0.8rem;
   }
   #slider.visible {
     left:0 !important;
     transition: left 0.3s;
   }
-  .overall {
-    opacity: 0;
+  .slider-label { margin: 15px 0 5px 0; }
+  .edittingKey { font-weight: bold; }
+  .slider-title {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    font-weight: bold;
+    font-size: 1rem;
+    height: 39px;
+    margin: 0;
+    line-height: 50px;
+    border-bottom: 1px solid rgba(0,0,0,0.85);
+    width: 73%;
   }
+
+  .overall { opacity: 0; }
   .overall.visible {
       transition: opacity 0.3s;
       opacity: 1;
@@ -80,28 +100,53 @@
     left: 0;
     background-color: rgba(0,0,0,0.85);
     z-index: 10;
+    padding-top: 5px;
+    box-sizing: border-box;
 
-    color: rgba(255,255,255,0.85);
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 39px;
-    font-family: sans-serif;
   }
-
+  .opener span {
+    border: 1px solid #Fff;
+    display: block;
+    margin: 6px 7px;
+  }
+  .onMenuRight, .onMenuLeft {
+    transform: rotate(0deg);
+    transition: 0.3s;
+  }
+  .onMenu > .onMenuHidden {
+    display: none;
+  }
+  .onMenu > .onMenuLeft,
+  .onMenu > .onMenuRight{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 27px;
+    margin-top: 18px;
+    transition: transform 0.3s;
+  }
+  .onMenu > .onMenuLeft {
+    transform: rotate(45deg);
+    transition: transform 0.3s;
+  }
+  .onMenu > .onMenuRight { transform: rotate(-45deg); }
 
 </style>
 </head>
 <body>
-  <div class="opener">M</div>
+  <div class="opener">
+    <span class="onMenuLeft"></span>
+    <span class="onMenuRight"></span>
+    <span class="onMenuHidden"></span>
+  </div>
   <div class="overall"></div>
   <div class="container">
     <div id="slider">
-      <p>現在の記事ID : <br><span class="edittingKey"></span></p>
-      <p>
-        <span>記事一覧</span>
-        <ul id="menu"></ul>
-      </p>
+      <p class="slider-title">Menu</p>
+      <p class="slider-label">現在の記事ID :</p>
+      <span class="edittingKey"></span>
+      <p class="slider-label">記事一覧</p>
+      <ul id="menu"></ul>
       <p><button class="btn_create">新しい記事の作成</button></p>
     </div>
     <div id="main">
@@ -112,7 +157,12 @@
 <script src="orenoeditor_proto.js" charset="utf-8"></script>
 <script>
   (function(){
-    new OrenoEditor({ selector: '#main' }).run()
+    new OrenoEditor(
+      {
+        selector: '#main',
+        prefix: 'OrenoEditor'
+      }
+    ).run()
   })();
 
 </script>
@@ -122,6 +172,12 @@
   $('.opener, .overall, .btn_switch, .btn_create').click(function(){
     $('#slider').stop(true).toggleClass('visible')
     $('.overall').stop(true).toggleClass('visible')
+    $('.opener').stop(true).toggleClass('onMenu')
+  })
+  $('#menu').on('click','.btn_switch', function(){
+    $('#slider').stop(true).toggleClass('visible')
+    $('.overall').stop(true).toggleClass('visible')
+    $('.opener').stop(true).toggleClass('onMenu')
   })
 
 })();

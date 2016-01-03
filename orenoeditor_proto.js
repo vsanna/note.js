@@ -41,23 +41,21 @@
 // 書き方2 オーソドックス.
 var OrenoEditor = function(config){
   this.MAX_ARTICLE_NUM = 20;
-  this.KEY_PREFIX = 'testString';
-
-
-  this.selector = config.selector
-  /*
-  指定しているセレクタ
-  - エディター
-  - メニュー
-  - 新規記事作成ボタン
-  - 現在の記事IDの表記箇所 ... 不要?
-  - 切り替えボタン
-  - 削除ボタン
-  */
+  this.KEY_PREFIX = (config.prefix) ? config.prefix : 'OrenoEditor';
+  this.selector = (config.selector) ? config.selector : '#main';
   this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : this.KEY_PREFIX + '1'
   this.articleKeys = [];
 
 
+  // { selector: {
+  //     editor: '#main',
+  //     menu: '#menu',
+  //     edittingKey: '.edittingKey',
+  //     btnSwitch: '.btn_switch',
+  //     btnCreate: '.btn_create',
+  //   },
+  //   prefix: 'OrenoEditor'
+  // }
 
 }
 
@@ -70,6 +68,7 @@ OrenoEditor.prototype = {
     // なお、呼び出した関数内でのthisは関数呼び出しを行ったインスタンスそのものなので問題なし
     this.findEditableArea();
     this.makeEditableArea();
+    this.makeEditableAreaFocus();
     this.makeMenu();
     this.readInitText();
     this.makeButtonToCreateNewArticle();
@@ -95,10 +94,14 @@ OrenoEditor.prototype = {
     // this.__proto__.showWitchKeyIsPressing.call(this);
   },
   findEditableArea: function(){
+    console.log(this.selector)
     this.editableArea = document.querySelector(this.selector)
   },
   makeEditableArea: function(){
     this.editableArea.contentEditable = true
+  },
+  makeEditableAreaFocus: function(){
+    this.editableArea.focus()
   },
   makeMenu: function(){
     this.formatMenu();
@@ -110,9 +113,13 @@ OrenoEditor.prototype = {
     }
   },
   readInitText: function(){
-    if( this.edittingKey && localStorage[this.edittingKey] ){
+    if( this.edittingKey && localStorage[this.edittingKey] != undefined ){
       this.editableArea.innerHTML = localStorage[this.edittingKey]
       this.showCurrentArticleKey()
+    } else {
+      var id = this.createNewArticle();
+      this.switchText(id);
+      this.makeMenu();
     }
   },
   makeButtonToSave: function(){
@@ -122,15 +129,20 @@ OrenoEditor.prototype = {
   },
   makeButtonToCreateNewArticle: function(){
     document.querySelector('.btn_create').addEventListener('click', (function(){
-      if(this.maxArticleNum > this.MAX_ARTICLE_NUM){
-        alert('記事は100以上作成できません')
-        return
-      }
-      var randID = Math.round(Math.random()*100000000000000); // かっこ良くしたい。
-      localStorage.setItem(this.KEY_PREFIX+randID,'');
-      this.switchText(this.KEY_PREFIX + randID)
+      var id = this.createNewArticle();
+      this.switchText(id)
       this.makeMenu();
     }).bind(this))
+  },
+  createNewArticle: function(){
+    if(this.articleKeys.length > this.MAX_ARTICLE_NUM){
+      alert('記事は'+this.MAX_ARTICLE_NUM+'以上作成できません')
+      return
+    }
+    var randID = Math.round(Math.random()*100000000000000); // かっこ良くしたい。
+    localStorage.setItem(this.KEY_PREFIX+randID,'');
+
+    return this.KEY_PREFIX+randID;
   },
 
   // 以下切り出したメソッド
@@ -201,7 +213,7 @@ OrenoEditor.prototype = {
     this.editableArea.focus()
   },
   deleteText(key){
-    if( confirm('really?') ){
+    if( confirm('削除しておｋ?') ){
       delete localStorage[key]
       this.makeMenu();
       this.switchText(this.articleKeys[0]);
