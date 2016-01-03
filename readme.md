@@ -48,3 +48,8 @@ here is sample.html.
 </html>
 
 ```
+
+## TODO
+- add shortcut
+- make selector-name optional
+- add title
