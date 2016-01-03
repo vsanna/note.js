@@ -1,6 +1,6 @@
 # Note
 
-Note is a JavaScript library to create simple note application.
+Note is a JavaScript library to create simple note application.([Demo](http://vsanna.github.io/notejs/))
 
 
 ```js
