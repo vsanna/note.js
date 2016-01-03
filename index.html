@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>俺のエディタプロトタイプ</title>
+  <title>note.js : 俺のエディタプロトタイプ</title>
 <style media="screen">
   body {
       font-family: YuGothic;
@@ -154,22 +154,22 @@
   </div>
 
 
-<script src="orenoeditor_proto.js" charset="utf-8"></script>
+<script src="note.js" charset="utf-8"></script>
 <script>
   (function(){
-    new OrenoEditor(
+    new Note(
       {
         selector: '#main',
-        prefix: 'OrenoEditor'
+        prefix: 'Memo'
       }
     ).run()
   })();
 
 </script>
-<script src="jquery-1.11.2.min.js" charset="utf-8"></script>
+<script src="vendor/jquery-1.11.2.min.js" charset="utf-8"></script>
 <script>
 (function(){
-  $('.opener, .overall, .btn_switch, .btn_create').click(function(){
+  $('.opener, .overall, .btn_create').click(function(){
     $('#slider').stop(true).toggleClass('visible')
     $('.overall').stop(true).toggleClass('visible')
     $('.opener').stop(true).toggleClass('onMenu')

@@ -39,11 +39,11 @@
 
 
 // 書き方2 オーソドックス.
-var OrenoEditor = function(config){
+var Note = function(config){
   this.MAX_ARTICLE_NUM = 20;
-  this.KEY_PREFIX = (config.prefix) ? config.prefix : 'OrenoEditor';
+  this.KEY_PREFIX = (config.prefix) ? config.prefix : 'Note';
   this.selector = (config.selector) ? config.selector : '#main';
-  this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : this.KEY_PREFIX + '1'
+  this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : undefined;
   this.articleKeys = [];
 
 
@@ -59,7 +59,7 @@ var OrenoEditor = function(config){
 
 }
 
-OrenoEditor.prototype = {
+Note.prototype = {
   run: function(){
     // このthisはrunを呼び出したインスタンス
 
@@ -118,6 +118,7 @@ OrenoEditor.prototype = {
       this.showCurrentArticleKey()
     } else {
       var id = this.createNewArticle();
+      this.edittingKey = id;
       this.switchText(id);
       this.makeMenu();
     }
