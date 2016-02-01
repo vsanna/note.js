@@ -111,7 +111,7 @@ Note.prototype = {
   },
   createButton: function(item, index){
     // メニューにボタンを追加.
-    var textNode = document.createTextNode(String(index).substr(0,15).replace(/<.*>/,""));
+    var textNode = document.createTextNode(String(index).substr(0,15).replace(/<.*[>*]/,""));
     var btn = document.createElement('button');
     var li = document.createElement('li')
 
