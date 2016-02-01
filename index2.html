@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>note.js</title>
+<style media="screen">
+  body {
+      font-family: YuGothic;
+  }
+  .container {
+    margin: 0 10%;
+  }
+  #main {
+    outline: none;
+    margin-top: 30px;
+    padding: 30px 45pxg;
+    box-shadow: none;
+    transition: box-shadow 0.3s;
+
+  }
+  #main:focus {
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+    transition: box-shadow 0.3s;
+  }
+
+  #menu {
+      padding: 0;
+  }
+  #menu li {
+    list-style: none;
+    margin-bottom: 10px;
+  }
+  .btn_switch, .btn_delete, .btn_create {
+    border: none;
+    padding: 8px 16px;
+    height: 100%;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .btn_switch {
+      width: 70%;
+      margin-right: 10px;
+      background-color: rgba(255,255,255,0.85);
+      color: rgba(0,0,0,0.85);
+      transition: background-color 0.3s;
+
+  }
+
+  .btn_switch:hover {
+      background-color: #FBC02D;
+      transition: background-color 0.1s;
+  }
+  #slider {
+    background-color: #ddd;
+    padding: 50px 16px;
+    position: absolute;
+    top: 0;
+    left: -332px;
+    transition: left 0.3s;
+    height: 100%;
+    width: 300px;
+    font-size: 0.8rem;
+  }
+  #slider.visible {
+    left:0 !important;
+    transition: left 0.3s;
+  }
+  .slider-label { margin: 15px 0 5px 0; }
+  .edittingKey { font-weight: bold; }
+  .slider-title {
+    position: absolute;
+    top: 0;
+    left: 60px;
+    font-weight: bold;
+    font-size: 1rem;
+    height: 39px;
+    margin: 0;
+    line-height: 50px;
+    border-bottom: 1px solid rgba(0,0,0,0.85);
+    width: 73%;
+  }
+
+  .overall { opacity: 0; }
+  .overall.visible {
+      transition: opacity 0.3s;
+      opacity: 1;
+      background-color: rgba(0,0,0,0.5);
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+  }
+  .opener {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.85);
+    z-index: 10;
+    padding-top: 5px;
+    box-sizing: border-box;
+
+  }
+  .opener span {
+    border: 1px solid #Fff;
+    display: block;
+    margin: 6px 7px;
+  }
+  .onMenuRight, .onMenuLeft {
+    transform: rotate(0deg);
+    transition: 0.3s;
+  }
+  .onMenu > .onMenuHidden {
+    display: none;
+  }
+  .onMenu > .onMenuLeft,
+  .onMenu > .onMenuRight{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 27px;
+    margin-top: 18px;
+    transition: transform 0.3s;
+  }
+  .onMenu > .onMenuLeft {
+    transform: rotate(45deg);
+    transition: transform 0.3s;
+  }
+  .onMenu > .onMenuRight { transform: rotate(-45deg); }
+</style>
+</head>
+<body>
+  <div class="opener">
+    <span class="onMenuLeft"></span>
+    <span class="onMenuRight"></span>
+    <span class="onMenuHidden"></span>
+  </div>
+  <div class="overall"></div>
+  <div class="container">
+    <div id="slider">
+      <p class="slider-title">Menu</p>
+      <p class="slider-label">現在の記事ID :</p>
+      <span class="edittingKey"></span>
+      <p class="slider-label">記事一覧</p>
+      <ul id="menu"></ul>
+      <p><button class="btn_create">新しい記事の作成</button></p>
+    </div>
+    <div id="main">
+    </div>
+  </div>
+
+
+<script src="NoteEs6.js" charset="utf-8"></script>
+<script>
+  (function(){
+    new Note(
+      {
+        editor: '#main',
+        prefix: 'Memo'
+      }
+    ).run()
+  })();
+
+</script>
+<script src="vendor/jquery-1.11.2.min.js" charset="utf-8"></script>
+<script>
+(function(){
+  $('.opener, .overall, .btn_create').click(function(){
+    $('#slider').stop(true).toggleClass('visible')
+    $('.overall').stop(true).toggleClass('visible')
+    $('.opener').stop(true).toggleClass('onMenu')
+  })
+  $('#menu').on('click','.btn_switch', function(){
+    $('#slider').stop(true).toggleClass('visible')
+    $('.overall').stop(true).toggleClass('visible')
+    $('.opener').stop(true).toggleClass('onMenu')
+  })
+
+})();
+</script>
+</body>
+</html>

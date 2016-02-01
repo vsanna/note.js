@@ -1,25 +1,16 @@
-var Note = function(config){
-  this.MAX_ARTICLE_NUM = 20;
-  this.KEY_PREFIX = (config.prefix) ? config.prefix : 'Note';
-  this.editor = (config.editor) ? config.editor : '#main';
-  this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : undefined;
-  this.articleKeys = [];
+class Note {
+  constructor({editor = "#main", prefix="Note"}){
+    this.MAX_ARTICLE_NUM = 20;
+    this.KEY_PREFIX = prefix;
 
-  // こうしたい。
-  // { selector: {
-  //     editor: '#main',
-  //     menu: '#menu',
-  //     edittingKey: '.edittingKey',
-  //     btnSwitch: '.btn_switch',
-  //     btnCreate: '.btn_create',
-  //   },
-  //   prefix: 'OrenoEditor'
-  // }
+    this.editor = editor;
+    this.edittingKey = (localStorage.edittingKey) ? localStorage.edittingKey : undefined;
 
-}
+    this.articleKeys = [];
+  }
 
-Note.prototype = {
-  run: function(){
+
+  run(){
     this.findEditableArea();
     this.makeEditableArea();
     this.makeEditableAreaFocus();
@@ -27,28 +18,30 @@ Note.prototype = {
     this.readInitText();
     this.makeButtonToCreateNewArticle();
     this.makeButtonToSave();
-
     this.showWitchKeyIsPressed();
-  },
-  findEditableArea: function(){
+  }
+
+  findEditableArea(){
     this.editableArea = document.querySelector(this.editor)
-  },
-  makeEditableArea: function(){
+  }
+  makeEditableArea(){
     this.editableArea.contentEditable = true
-  },
-  makeEditableAreaFocus: function(){
+  }
+  makeEditableAreaFocus(){
     this.editableArea.focus()
-  },
-  makeMenu: function(){
+  }
+  makeMenu(){
     this.formatMenu();
     this.readKeysFromStorage();
 
     var replaceTarget = new RegExp(this.KEY_PREFIX);
-    for( var index in this.articleKeys ){
-      this.createButton(this.articleKeys[index], localStorage[this.articleKeys[index]]);
+    for( let index of this.articleKeys ){
+      this.createButton(
+        this.articleKeys[index], this.articleKeys[index].replace(replaceTarget,'')
+      );
     }
-  },
-  readInitText: function(){
+  }
+  readInitText(){
     if( this.edittingKey && localStorage[this.edittingKey] != undefined ){
       this.editableArea.innerHTML = localStorage[this.edittingKey]
       this.showCurrentArticleKey()
@@ -58,20 +51,22 @@ Note.prototype = {
       this.switchText(id);
       this.makeMenu();
     }
-  },
-  makeButtonToSave: function(){
-    this.editableArea.addEventListener('keyup', (function(){
+  }
+  makeButtonToSave(){
+    this.editableArea.addEventListener('keyup', () => {
       localStorage.setItem(this.edittingKey, this.editableArea.innerHTML);
-    }).bind(this))
-  },
-  makeButtonToCreateNewArticle: function(){
-    document.querySelector('.btn_create').addEventListener('click', (function(){
+    })
+  }
+
+  makeButtonToCreateNewArticle(){
+    document.querySelector('.btn_create').addEventListener('click', () => {
       var id = this.createNewArticle();
       this.switchText(id)
       this.makeMenu();
-    }).bind(this))
-  },
-  createNewArticle: function(){
+    })
+  }
+
+  createNewArticle(){
     if(this.articleKeys.length > this.MAX_ARTICLE_NUM){
       alert('記事は'+this.MAX_ARTICLE_NUM+'以上作成できません')
       return
@@ -80,38 +75,39 @@ Note.prototype = {
     localStorage.setItem(this.KEY_PREFIX+randID,'');
 
     return this.KEY_PREFIX+randID;
-  },
+  }
 
   // 以下切り出したメソッド
-  showCurrentArticleKey: function(){
+  showCurrentArticleKey(){
     document.querySelector('.edittingKey').innerHTML = this.edittingKey
-  },
-  formatMenu: function(){
+  }
+  formatMenu(){
     // 初期化
     if( this.articleKeys.length > 0){
       this.removeChildren(document.querySelector('#menu'))
       this.articleKeys = []
     }
-  },
-  removeChildren: function(node){
+  }
+  removeChildren(node){
     var nodes = node.children
     for(var i = nodes.length-1; i >= 0; i--){
       node.removeChild(nodes[i])
     }
-  },
-  readKeysFromStorage: function(){
+  }
+  readKeysFromStorage(){
     var keys = []
-    for(var prop in localStorage){
+    for(let prop of localStorage){
       // KEY_PREFIXから始まるkeyのみ取得
       if( new RegExp("^" + this.KEY_PREFIX).test(prop) ){
         keys.push(prop)
       }
     }
     this.articleKeys = keys;
-  },
-  createButton: function(item, index){
+  }
+
+  createButton(item, index){
     // メニューにボタンを追加.
-    var textNode = document.createTextNode('テキストID: ' + String(index).substr(0,15));
+    var textNode = document.createTextNode('テキストID: ' + String(index));
     var btn = document.createElement('button');
     var li = document.createElement('li')
 
@@ -123,7 +119,7 @@ Note.prototype = {
     btn.setAttribute('class', 'btn_switch');
     document.getElementById('menu').appendChild(li);
 
-    btn.addEventListener('click', this.switchText.bind(this, dataKey));
+    btn.addEventListener('click', this.switchText(dataKey));
 
     var deleteBtn = document.createElement('button')
     deleteBtn.appendChild(document.createTextNode('delete'));
@@ -131,36 +127,36 @@ Note.prototype = {
     deleteBtn.setAttribute('class', 'btn_delete');
     li.appendChild(deleteBtn);
 
-    deleteBtn.addEventListener('click', this.deleteText.bind(this, dataKey))
-  },
+    deleteBtn.addEventListener('click', this.deleteText(dataKey))
+  }
 
   // 以下エディターの操作
-  switchEdittingKey: function(key){
+  switchEdittingKey(key){
     this.edittingKey = key
     this.showCurrentArticleKey()
     localStorage.setItem("edittingKey", this.edittingKey);
-  },
-  switchText: function(key){
+  }
+  switchText(key){
     this.switchEdittingKey(key)
     this.editableArea.innerHTML = localStorage[key]
     this.editableArea.focus()
-  },
+  }
   deleteText(key){
     if( confirm('削除しておｋ?') ){
       delete localStorage[key]
       this.makeMenu();
       this.switchText(this.articleKeys[0]);
     }
-  },
+  }
 
 
-  saveToServer: function(){
+  saveToServer(){
     // いずれrailsに送る
     // keyupで送ると通信がパンクするのでintervalおいてセーブする
-  },
-  showWitchKeyIsPressed: function(){
+  }
+  showWitchKeyIsPressed(){
     // 取得したkeyCodeを元にショートカットを定義づける(いずれ)
     this.editableArea.addEventListener('keypress', function(e){ console.log(e.keyCode) })
-  },
+  }
 
 }
