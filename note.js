@@ -45,7 +45,7 @@ Note.prototype = {
 
     var replaceTarget = new RegExp(this.KEY_PREFIX);
     for( var index in this.articleKeys ){
-      this.createButton(this.articleKeys[index], localStorage[this.articleKeys[index]]);
+      this.createButton(this.articleKeys[index], this.articleKeys[index]);
     }
   },
   readInitText: function(){
@@ -109,9 +109,10 @@ Note.prototype = {
     }
     this.articleKeys = keys;
   },
+  // index ... key
   createButton: function(item, index){
     // メニューにボタンを追加.
-    var textNode = document.createTextNode(String(index).substr(0,15).replace(/<.*[>*]/,""));
+    var textNode = document.createTextNode(String(localStorage[index]).substr(0,15).replace(/<.*[>*]/,""));
     var btn = document.createElement('button');
     var li = document.createElement('li')
 
