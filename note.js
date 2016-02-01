@@ -119,7 +119,7 @@ Note.prototype = {
     li.appendChild(btn);
     btn.appendChild(textNode);
 
-    var dataKey = this.KEY_PREFIX + index;
+    var dataKey = index;
     btn.setAttribute('data-key', dataKey);
     btn.setAttribute('class', 'btn_switch');
     document.getElementById('menu').appendChild(li);
